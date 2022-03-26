@@ -74,6 +74,7 @@ namespace DataTool {
             FlagParser.LoadArgs();
 
             Logger.Info("Core", $"{Assembly.GetExecutingAssembly().GetName().Name} v{Util.GetVersion(typeof(Program).Assembly)}");
+            Logger.Info("Core", $"dotnet {Environment.Version} {Environment.OSVersion}");
 
             Logger.Info("Core", $"CommandLine: [{string.Join(", ", FlagParser.AppArgs.Select(x => $"\"{x}\""))}]");
 
