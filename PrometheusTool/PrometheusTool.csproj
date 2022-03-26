@@ -25,13 +25,13 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\revorbstd\RevorbStd.csproj"/>
-        <ProjectReference Include="..\TACTLib\TACTLib\TACTLib.csproj"/>
-        <ProjectReference Include="..\TankLib\TankLib.csproj"/>
+        <ProjectReference Include="..\revorbstd\RevorbStd.csproj" />
+        <ProjectReference Include="..\TACTLib\TACTLib\TACTLib.csproj" />
+        <ProjectReference Include="..\TankLib\TankLib.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="DragonLib" Version="2.0.0"/>
+        <PackageReference Include="DragonLib" Version="2.0.0" />
     </ItemGroup>
 
 </Project>

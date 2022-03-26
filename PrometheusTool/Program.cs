@@ -47,24 +47,23 @@ public static class Program {
         Logger.Info("Core", $"dotnet {Environment.Version} {Environment.OSVersion}");
         Logger.Info("Core", $"CommandLine: [{string.Join(", ", AppArgs.Select(x => $"\"{x}\""))}]");
 
-        var flags = CommandLineFlags.ParseFlags<ProFlags>();
+        ModeRouter = new ModeRouter();
+        
+        var flags = CommandLineFlags.ParseFlags<ProFlags>(PrintHelp);
         if (flags == null) {
             return;
         }
 
         Flags = flags;
-        ModeRouter = new ModeRouter();
+        Logger.Info("Core", Flags.ToString());
 
         if (string.IsNullOrWhiteSpace(Flags.OverwatchDirectory) || string.IsNullOrWhiteSpace(Flags.Mode) || Flags.Help) {
-            CommandLineFlags.PrintHelp<ProFlags>((flagMap, helpInvoked) => {
-                    CommandLineFlags.PrintHelp(flagMap, helpInvoked);
-                    ModeRouter.PrintModeHelp(helpInvoked);
-                },
-                true);
+            CommandLineFlags.PrintHelp<ProFlags>(PrintHelp, true);
             return;
         }
 
         (ModeFlags, ModeInfo) = ModeRouter.ConstructModeFlags(Flags.Mode);
+        Logger.Info("Core", ModeFlags.ToString());
         if (!ModeInfo.UtilNoArchiveNeeded) {
             try {
                 InitStorage(Flags.Online);
@@ -90,6 +89,16 @@ public static class Program {
             InitKeys();
             InitMisc();
         }
+
+        var mode = ModeRouter.ConstructMode(flags.Mode, ModeFlags);
+        if (mode is IDisposable disposable) {
+            disposable.Dispose();
+        }
+    }
+
+    private static void PrintHelp(List<(CLIFlagAttribute? Flag, Type FlagType)> flags, bool helpInvoked) {
+        CommandLineFlags.PrintHelp(flags, helpInvoked);
+        ModeRouter.PrintModeHelp(helpInvoked);
     }
 
     private static void HookConsole() {
@@ -199,7 +208,7 @@ public static class Program {
         var args = new ClientCreateArgs {
             SpeechLanguage = Flags.SpeechLanguage.ToString(),
             TextLanguage = Flags.Language.ToString(),
-            HandlerArgs = new ClientCreateArgs_Tank { CacheAPM = !Flags.DisableIndexCache, ManifestRegion = ProductHandler_Tank.REGION_DEV },
+            HandlerArgs = new ClientCreateArgs_Tank { CacheAPM = !Flags.DisableAPMCache, ManifestRegion = ProductHandler_Tank.REGION_DEV },
             Online = online,
         };
 
