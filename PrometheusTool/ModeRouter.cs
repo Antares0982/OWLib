@@ -22,7 +22,7 @@ public class ModeRouter {
 
     public void PrintModeHelp(bool helpInvoked) {
         var done = new HashSet<string>();
-        foreach (var modePair in Modes.Where(x => x.Value.Info.IsSensitive).GroupBy(x => x.Value.Info.Group)) {
+        foreach (var modePair in Modes.Where(x => !x.Value.Info.IsSensitive).GroupBy(x => x.Value.Info.Group)) {
             var groupName = "Uncategorized";
             if (modePair.Key != null) {
                 groupName = modePair.Key;
@@ -43,7 +43,7 @@ public class ModeRouter {
 
     public IMode ConstructMode(string tag) {
         if (!Modes.TryGetValue(tag, out var modeInfo)) {
-            Logger.Info("Mode", $"Available modes: {string.Join(", ", Modes.Keys)}");
+            Logger.Info("Mode", $"Available modes: {string.Join(", ", Modes.Where(x => !x.Value.Info.IsSensitive).Select(x => x.Key))}");
             Logger.Fatal("Mode", $"Cannot find tool mode {tag}.");
             throw new ModeNotFoundException(tag);
         }
@@ -54,7 +54,7 @@ public class ModeRouter {
 
     public IMode ConstructMode(string tag, ICLIFlags? modeFlags) {
         if (!Modes.TryGetValue(tag, out var modeInfo)) {
-            Logger.Info("Mode", $"Available modes: {string.Join(", ", Modes.Keys)}");
+            Logger.Info("Mode", $"Available modes: {string.Join(", ", Modes.Where(x => !x.Value.Info.IsSensitive).Select(x => x.Key))}");
             Logger.Fatal("Mode", $"Cannot find tool mode {tag}.");
             throw new ModeNotFoundException(tag);
         }
@@ -64,7 +64,7 @@ public class ModeRouter {
 
     public (ICLIFlags Flags, ModeAttribute Info) ConstructModeFlags(string tag) {
         if (!Modes.TryGetValue(tag, out var modeInfo)) {
-            Logger.Info("Mode", $"Available modes: {string.Join(", ", Modes.Keys)}");
+            Logger.Info("Mode", $"Available modes: {string.Join(", ", Modes.Where(x => !x.Value.Info.IsSensitive).Select(x => x.Key))}");
             Logger.Fatal("Mode", $"Cannot find tool mode {tag}.");
             throw new ModeNotFoundException(tag);
         }
