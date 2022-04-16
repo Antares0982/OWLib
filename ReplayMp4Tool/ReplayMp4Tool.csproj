@@ -9,6 +9,7 @@
     <FileVersion>1.0.0.0</FileVersion>
     <IsPublishable>false</IsPublishable>
     <DeployOnBuild>false</DeployOnBuild>
+    <RuntimeIdentifier>win10-x64</RuntimeIdentifier>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\DataTool\DataTool.csproj" />
